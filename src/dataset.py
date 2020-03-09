@@ -1,9 +1,12 @@
 import transformers
+from nltk.tokenize import RegexpTokenizer
+
 
 class IMDBDataset:
+
     def __init__(self, review, label):
-        self.__review = review
-        self.__label = label
+        self.__review = review.values
+        self.__label = label.values
         self.__tokenizer = transformers.BertTokenizer.from_pretrained(
             "../input/",
             do_lower_case=True
@@ -26,4 +29,9 @@ class IMDBDataset:
         return len(self.get_review())
 
     def __getitem__(self, item):
-        return str(self.get_review()[item])
+        text = str(self.get_review()[item])
+
+        tokenizer = RegexpTokenizer(r'\w+')
+        text_clean = tokenizer.tokenize(text)
+        print(text_clean)
+
