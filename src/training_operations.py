@@ -2,23 +2,23 @@ import numpy as np
 import torch
 import torch.nn as nn
 from transformers import AdamW
+from tqdm import tqdm
 
 
 def train_function(data, model, lr):
     optimizer = get_optimizer(model, lr)
     model.train()
 
-    for idx, value in enumerate(data):
+    for idx, value in tqdm(enumerate(data), total=len(data)):
         optimizer.zero_grad()
-        print(value)
 
         ids = value[0]
         mask = value[1]
         token_ids = value[2]
-        targets = value[3]
+        targets = value[3].view(-1, 1)
 
         outputs = model(input_ids=ids, attention_mask=mask, token_type_ids=token_ids)
-        loss = loss_func(targets, outputs)
+        loss = loss_func(pred=outputs, true=targets)
 
         optimizer.step()
 
@@ -35,7 +35,7 @@ def eval_function(data, model):
             ids = value[0]
             mask = value[1]
             token_ids = value[2]
-            targets = value[3]
+            targets = value[3].view(-1, 1)
 
             outputs = model(input_ids=ids, attention_mask=mask, token_type_ids=token_ids)
 
@@ -53,8 +53,8 @@ def eval_function(data, model):
     return acc
 
 
-def loss_func(true, pred):
-    return nn.BCELoss()(true, pred)
+def loss_func(pred, true):
+    return nn.BCEWithLogitsLoss()(pred, true)
 
 
 def get_optimizer(model, lr):
