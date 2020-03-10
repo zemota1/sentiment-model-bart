@@ -57,4 +57,3 @@ class IMDBDataset:
             torch.tensor(data=token_type_ids_array, dtype=torch.int64),
             torch.tensor(data=self.get_label()[item], dtype=torch.float64)
         ]
-

@@ -19,6 +19,7 @@ def train_function(data, model, lr):
 
         outputs = model(input_ids=ids, attention_mask=mask, token_type_ids=token_ids)
         loss = loss_func(pred=outputs, true=targets)
+        loss.backward()
 
         optimizer.step()
 
