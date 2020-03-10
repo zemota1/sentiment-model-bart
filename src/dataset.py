@@ -13,7 +13,7 @@ class IMDBDataset:
             "../input/",
             do_lower_case=True
         )
-        self.__max_length = 512
+        self.__max_length = 256
 
     def get_max_len(self):
         return self.__max_length
