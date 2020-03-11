@@ -19,7 +19,7 @@ def pre_process(path):
 
     train, test = train_test_split(
         df,
-        test_size=0.2,
+        test_size=0.1,
         random_state=RANDOM_STATE,
         stratify=df.sentiment.values
     )
