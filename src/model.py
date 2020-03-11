@@ -28,6 +28,7 @@ class BERTModel(nn.Module):
             attention_mask=attention_mask,
             token_type_ids=token_type_ids
         )
+
         x = self.dropout(out2)
         x = self.linear(x)
         return x

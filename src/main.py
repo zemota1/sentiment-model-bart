@@ -2,9 +2,9 @@ import pandas as pd
 import torch
 from sklearn.model_selection import train_test_split
 
-from src.dataset import IMDBDataset
-from src.model import BERTModel
-from src.training_operations import train_function, eval_function
+from dataset import IMDBDataset
+from model import BERTModel
+from training_operations import train_function, eval_function
 
 RANDOM_STATE = 42
 DATA_PATH = "../data/imdb-dataset.csv"
@@ -14,6 +14,7 @@ NUMBER_EPOCHS = 10
 def pre_process(path):
     df = pd.read_csv(path)
     df = df.fillna('')
+    df = df.iloc[:750, :]
     df.sentiment = pd.factorize(df.sentiment)[0]
 
     train, test = train_test_split(
@@ -52,9 +53,18 @@ def main():
     train_data_loader, test_data_loader = get_loaders(train_set, test_set)
 
     model = BERTModel()
+
+    param_optimizer = list(model.named_parameters())
+    no_decay = ['bias', 'LayerNorm.bias', 'LayerNorm.weight']
+    
+    optimizer_grouped_parameters = [
+        {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay': 0.01},
+        {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
+    ]
+
     for epoch in range(NUMBER_EPOCHS):
-        train_function(data=train_data_loader, model=model, lr=1e-3)
-        eval_function(data=test_data_loader)
+        train_function(data=train_data_loader, model=model, opt_param=optimizer_grouped_parameters, lr=1e-3)
+        eval_function(data=test_data_loader, model=model)
 
 
 if __name__ == '__main__':
