@@ -14,7 +14,7 @@ NUMBER_EPOCHS = 10
 def pre_process(path):
     df = pd.read_csv(path)
     df = df.fillna('')
-    df = df.iloc[:750, :]
+    df = df.iloc[:, :]
     df.sentiment = pd.factorize(df.sentiment)[0]
 
     train, test = train_test_split(

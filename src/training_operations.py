@@ -42,6 +42,7 @@ def eval_function(data, model):
             total += targets.size(0)
             predicts = torch.gt(outputs, 0.5).double()
             correct += (predicts == targets).sum().item()
+
     acc = (correct/total)*100        
     print(f'Accuracy {acc}%')
 
